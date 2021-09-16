@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.base.log.mapper.SysLogMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.base.log.entity.SysLog" id="sysLogMap">
+        <result property="logId" column="log_id"/>
+        <result property="module" column="module"/>
+        <result property="type" column="type"/>
+        <result property="param" column="param"/>
+        <result property="description" column="description"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="creator" column="creator"/>
+        <result property="creationPlace" column="creation_place"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                log_id,
+                module,
+                type,
+                param,
+                description,
+                creation_time,
+                creator,
+                creation_place,
+            </sql>
+
+</mapper>
