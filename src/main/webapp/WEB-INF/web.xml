@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+    <display-name>base-project</display-name>
+
+
+    <!--websocket executor 线程池的核心容量大小 -->
+    <context-param>
+        <param-name>org.apache.tomcat.websocket.executorCoreSize</param-name>
+        <param-value>500</param-value>
+    </context-param>
+    <!--websocket executor 线程池的最大容量大小 -->
+    <context-param>
+        <param-name>org.apache.tomcat.websocket.executorMaxSize</param-name>
+        <param-value>2000</param-value>
+    </context-param>
+
+
+    <!-- 加载Spring配置文件 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring/root-context.xml</param-value>
+    </context-param>
+
+    <!-- 字符集 过滤器 -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Spring监听器 -->
+    <listener>
+        <description>Spring监听器</description>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <!-- 防止Spring内存溢出监听器 -->
+    <listener>
+        <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+    </listener>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.jpg</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.png</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.gif</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.ico</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.js</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.css</url-pattern>
+    </servlet-mapping>
+    <!-- Spring MVC -->
+    <servlet>
+        <servlet-name>SpringMVC</servlet-name>
+        <servlet-class>com.superhao.base.config.HaoDispatcherServlet</servlet-class>
+        <init-param>
+            <description>SpringMVC</description>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring/spring-*.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SpringMVC</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+
+    <!--druid-->
+    <servlet>
+        <servlet-name>DruidStatServlet</servlet-name>
+        <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+        <init-param>
+            <param-name>loginUsername</param-name>
+            <param-value>admins</param-value>
+        </init-param>
+        <init-param>
+            <param-name>loginPassword</param-name>
+            <param-value>super@@12456</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DruidStatServlet</servlet-name>
+        <url-pattern>/druid/*</url-pattern>
+    </servlet-mapping>
+    <filter>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <filter-class>com.alibaba.druid.support.http.WebStatFilter</filter-class>
+        <init-param>
+            <param-name>exclusions</param-name>
+            <param-value>*.js,*.css,*.jpg,*.png,*.ico,*.gif,/druid/*</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>DruidWebStatFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+
+    <!--登陆 session校验-->
+    <filter>
+        <filter-name>sessionFilter</filter-name>
+        <filter-class> com.superhao.base.config.filter.SessionFilter</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>exclusionUrls</param-name>
+            <param-value>
+                /
+                ,/login.page
+                ,/sys/index
+                ,/sys/sysUser/login
+                ,/common/**
+            </param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>sessionFilter</filter-name>
+        <url-pattern>/sys/*</url-pattern>
+        <url-pattern>/swagger-ui.html</url-pattern>
+    </filter-mapping>
+
+    <!--权限校验-->
+    <filter>
+        <filter-name>authzFilter</filter-name>
+        <filter-class> com.superhao.base.config.filter.AuthzFilter</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>exclusionUrls</param-name>
+            <param-value>
+                /sys/sysUser/login,
+                /sys/index
+            </param-value>
+        </init-param>
+     </filter>
+    <filter-mapping>
+        <filter-name>authzFilter</filter-name>
+        <url-pattern>/sys/*</url-pattern>
+    </filter-mapping>
+
+    <!--特殊权限校验-->
+    <filter>
+        <filter-name>swaggerFilter</filter-name>
+        <filter-class>com.superhao.base.config.filter.SwaggerFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>swaggerFilter</filter-name>
+   <!--    <url-pattern>/druid/login.html</url-pattern>-->
+        <url-pattern>/swagger-ui.html</url-pattern>
+<!--        <url-pattern>/v2/api-docs</url-pattern>
+        <url-pattern>/configuration/security</url-pattern>
+        <url-pattern>/swagger-resources/configuration/ui</url-pattern>
+        <url-pattern>/webjars/**</url-pattern>-->
+    </filter-mapping>
+
+    <!-- Session超时时间 -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>/login</welcome-file>
+    </welcome-file-list>
+</web-app>
