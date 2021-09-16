@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+    <mvc:default-servlet-handler/>
+    <!-- 引入属性文件 -->
+    <context:property-placeholder  location="classpath:config/config-*.properties"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/app/**"/>
+            <mvc:exclude-mapping path="app/user/login"/>
+            <bean class="com.superhao.app.controller.intercept.AppSystemSecurityIntercept"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <!-- Controller包(自动注入) -->
+ <!--   <context:component-scan base-package="com.superhao.base.authz.controller,com.superhao.base.common.controller"/>
+-->
+
+<!--
+    <mvc:interceptors>
+
+        <mvc:interceptor>
+            &lt;!&ndash;暂时默认拦截所有请求，到时根据需求改变&ndash;&gt;
+            <mvc:mapping path="/swagger-resources"/>
+          &lt;!&ndash;  <mvc:mapping path="/swagger-ui.html"/>&ndash;&gt;
+            <mvc:mapping path="/v2/**"/>
+            <bean class="com.superhao.base.config.intercept.SwaggerInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+-->
+
+    <bean id="convertConfig" class="com.superhao.base.config.fastjosn.ConvertConfig"/>
+
+    <!-- FastJson注入 -->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <!-- 避免IE执行AJAX时,返回JSON出现下载文件 -->
+            <!-- FastJson  com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter -->
+           <bean id="fastJsonHttpMessageConverter"
+                  class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+               <property name="supportedMediaTypes">
+                    <list>
+                        <!-- 这里顺序不能反，一定先写text/html,不然ie下出现下载提示 -->
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+
+                <property name="features">
+                    <array value-type="com.alibaba.fastjson.serializer.SerializerFeature">
+                        <!-- 避免循环引用 -->
+                        <value>DisableCircularReferenceDetect</value>
+                        <!-- 是否输出值为null的字段 -->
+                        <value>WriteMapNullValue</value>
+                        <!-- 数值字段如果为null,输出为0,而非null -->
+                        <value>WriteNullNumberAsZero</value>
+                        <!-- 字符类型字段如果为null,输出为"",而非null  -->
+                        <value>WriteNullStringAsEmpty</value>
+                        <!-- List字段如果为null,输出为[],而非null -->
+                        <value>WriteNullListAsEmpty</value>
+                        <!-- Boolean字段如果为null,输出为false,而非null -->
+                        <value>WriteNullBooleanAsFalse</value>
+                        <value>WriteDateUseDateFormat</value>
+                    </array>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+
+
+
+
+    <!-- 静态资源配置 -->
+   <!-- <mvc:resources mapping="/resources/**" location="/resources/"/>-->
+    <!--<mvc:resources mapping="/p/**" location="/WEB-INF/pages/base/authz/"/>-->
+
+    <!--基础页面跳转-->
+  <!--  <import resource="spring-mvc-page.xml"/>-->
+
+    <!-- 对模型视图名称的解析,即在模型视图名称添加前后缀 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+
+
+
+    <!-- hibernate-validate 国际化配置 -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="useCodeAsDefaultMessage" value="true" />
+        <property name="basenames">
+            <list>
+                <value>classpath:config/validate-message</value>
+            </list>
+        </property>
+
+    </bean>
+    <!-- 注册验证器 -->
+    <mvc:annotation-driven validator="validator" />
+
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator" />
+        <!-- 这里配置将使用上面国际化配置的messageSource -->
+        <property name="validationMessageSource" ref="messageSource" />
+    </bean>
+</beans>

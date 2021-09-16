@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.app.mapper.AppUserMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.app.entity.AppUser" id="appUserMap">
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="password" column="password"/>
+        <result property="userType" column="user_type"/>
+        <result property="fileId" column="file_id"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="address" column="address"/>
+        <result property="signature" column="signature"/>
+        <result property="loginNumber" column="login_number"/>
+        <result property="remark" column="remark"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+        <result property="filePath" column="file_path"/>
+    </resultMap>
+    <resultMap type="com.superhao.app.entity.AppUser" id="appUserRoomRole">
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="address" column="address"/>
+        <result property="signature" column="signature"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="userType" column="user_type"/>
+        <result property="roleType" column="role_type"/>
+        <result property="filePath" column="file_path"/>
+    </resultMap>
+
+
+    <sql id="baseSelecet">
+                au.user_id,
+                au.user_name,
+                au.nick_name,
+                au.user_type,
+                au.email,
+                au.phone,
+                au.sex,
+                au.birthday,
+                au.address,
+                au.signature,
+                au.login_number,
+                au.remark,
+                au.creation_time,
+                au.last_update_time,
+                au.creator,
+                au.modifier,
+                au.creation_place,
+                au.last_update_place,
+                au.integral,
+                au.status,
+                au.enable,
+                au.version_number
+            </sql>
+     <select id="selectByMoreAccount" parameterType="com.superhao.app.entity.AppUser" resultMap="appUserMap">
+
+        select <include refid="baseSelecet"/>, CONCAT(b.module,'/',b.file_path) file_path
+        from app_user_t au
+        left join sys_file_t b on b.file_id = au.file_id
+        where
+        (user_name = #{userName} or email = #{email} or phone = #{phone}) and password = #{password} and au.enable = 'Y'
+    </select>
+    <select id="selectUserByRoom" parameterType="java.util.Map" resultMap="appUserRoomRole">
+
+        select
+        au.creation_time,
+         au.file_id,
+         au.sex,
+         au.user_name,
+         au.email,
+         au.phone,
+         au.birthday,
+         au.user_id,
+        au.signature,
+        arr.user_nickname as nick_name ,
+        CONCAT(#{httpPath},b.module,'/',b.file_path) file_path,
+        au.user_type,
+        arr.role_type from app_user_t au
+        inner join app_room_role_t arr on au.user_id = arr.user_id
+        left join sys_file_t b on b.file_id = au.file_id
+         where
+         arr.room_id = #{roomId}
+
+    </select>
+
+
+    <select id="selectByIdJoinFile" parameterType="java.util.Map" resultMap="appUserMap">
+      select au.integral,au.creation_time,au.file_id,au.sex,au.user_name,au.email,au.phone,au.birthday,au.user_id,au.nick_name ,au.signature,CONCAT(#{httpPath},b.module,'/',b.file_path) file_path,au.user_type from app_user_t au
+
+        left join sys_file_t b on b.file_id = au.file_id
+         where
+        user_id = #{userId}
+    </select>
+    <select id="selectByAccountJoinFile" parameterType="java.util.Map" resultMap="appUserMap">
+        select au.integral,au.creation_time,au.user_id,au.nick_name,au.signature,CONCAT(#{httpPath},b.module,'/',b.file_path) file_path,au.user_type from app_user_t au
+
+        left join sys_file_t b on b.file_id = au.file_id
+        where
+        user_name = #{account} or email = #{account} or phone = #{account}
+    </select>
+
+    <update id="updateColumById"  parameterType="com.superhao.app.entity.AppUser" >
+        update app_user_t
+        <trim prefix="set" suffixOverrides=",">
+            <if test="birthday!=null">birthday=#{birthday},</if>
+            <if test="nickName!=null">nick_name=#{nickName},</if>
+            <if test="signature!=null">signature=#{signature},</if>
+            <if test="fileId!=null">file_id=#{fileId},</if>
+            <if test="sex!=null">sex=#{sex},</if>
+            <if test="userName!=null">user_name=#{userName},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateIntegralById"   parameterType="java.util.Map" >
+        update app_user_t
+          set integral = (#{val}+integral)
+        where user_id = #{userId} and integral>=0
+    </update>
+
+
+
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.app.mapper.AppDisreportMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.app.entity.AppDisreport" id="appDisreportMap">
+        <result property="reportId" column="report_id"/>
+        <result property="targetId" column="target_id"/>
+        <result property="reportInfo" column="report_info"/>
+        <result property="roomId" column="room_id"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                report_id,
+                target_id,
+                report_info,
+                room_id,
+                creation_time,
+                last_update_time,
+                creator,
+                modifier,
+                creation_place,
+                last_update_place,
+                status,
+                enable,
+                version_number,
+            </sql>
+
+</mapper>

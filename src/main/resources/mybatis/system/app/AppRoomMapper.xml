@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.app.mapper.AppRoomMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.app.entity.AppRoom" id="appRoomMap">
+        <result property="roomId" column="room_id"/>
+        <result property="roomCode" column="room_code"/>
+        <result property="roomName" column="room_name"/>
+        <result property="findChatRecordNumber" column="find_chat_record_number"/>
+        <result property="anonymousSayTime" column="anonymous_say_time"/>
+        <result property="anonymousSayNumber" column="anonymous_say_number"/>
+        <result property="isAnonymous" column="is_anonymous"/>
+        <result property="isPicture" column="is_picture"/>
+        <result property="fileId" column="file_id"/>
+        <result property="remark" column="remark"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+
+        <result property="disablePeople" column="disable_people"/>
+        <result property="onlineBasePeople" column="online_base_people"/>
+        <result property="basePeople" column="base_people"/>
+        <result property="ad" column="ad"/>
+
+        <result property="filePath" column="file_path"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                  a.room_id,
+                a.room_code,
+                a.room_name,
+                a.find_chat_record_number,
+                a.anonymous_say_time,
+                a.anonymous_say_number,
+                a.ad,
+                a.is_anonymous,
+                a.is_picture,
+                a.file_id,
+                a.remark,
+                a.creation_time,
+                a.last_update_time,
+                a.creator,
+                a.modifier,
+                a.creation_place,
+                a.last_update_place,
+                a.status,
+                a.enable,
+                a.disable_people,
+                a.online_base_people,
+                a.base_people,
+                a.version_number
+
+            </sql>
+
+
+    <select id="selectJoinFileById" parameterType="java.lang.Long" resultMap="appRoomMap">
+
+        select <include refid="baseSelecet"/>,CONCAT(b.module,'/',b.file_path) as file_path from app_room_t a
+        left join sys_file_t b on a.file_id = b.file_id
+        where a.room_id = #{roomId}
+    </select>
+
+    <update id="updateDisablePeople" >
+        update app_room_t set disable_people = #{disablePeople} where room_id = #{roomId}
+    </update>
+</mapper>

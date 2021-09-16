@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <!--基础页面跳转-->
+<!--    <mvc:view-controller path="/login.page" view-name="login"/>-->
+
+<!--
+    <mvc:view-controller path="/sys/authz/sysUserDetail.page" view-name="base/authz/sysUserDetail"/>
+-->
+
+    <mvc:view-controller path="/sys/authz/sysUser.page" view-name="base/authz/sysUser"/>
+    <mvc:view-controller path="/sys/authz/sysUserForm.page" view-name="base/authz/sysUserForm"/>
+    <mvc:view-controller path="/sys/authz/permission.page" view-name="base/authz/permission"/>
+    <mvc:view-controller path="/sys/authz/permissionForm.page" view-name="base/authz/permissionForm"/>
+    <mvc:view-controller path="/sys/authz/sysRole.page" view-name="base/authz/sysRole"/>
+    <mvc:view-controller path="/sys/authz/sysRoleForm.page" view-name="base/authz/sysRoleForm"/>
+
+
+    <mvc:view-controller path="/sys/authz/sysServicePhone.page" view-name="base/authz/sysServicePhone"/>
+    <mvc:view-controller path="/sys/app/chatRoom.page" view-name="base/app/chatRoom"/>
+    <mvc:view-controller path="/sys/app/chatRoomForm.page" view-name="base/app/chatRoomForm"/>
+    <mvc:view-controller path="/sys/app/roomRole.page" view-name="base/app/roomRole"/>
+    <mvc:view-controller path="/sys/app/qrCode.page" view-name="base/app/qrCode"/>
+    <mvc:view-controller path="/sys/app/registerCode.page" view-name="base/app/registerCode"/>
+
+
+    <mvc:view-controller path="/sys/app/appUser.page" view-name="base/app/user/appUser"/>
+    <mvc:view-controller path="/sys/app/robotUser.page" view-name="base/app/user/robotUser"/>
+    <mvc:view-controller path="/sys/app/robotUserForm.page" view-name="base/app/user/robotUserForm"/>
+
+    <mvc:view-controller path="/sys/app/integralManager.page" view-name="base/app/integral/integralManager"/>
+
+    <!--应用-->
+    <mvc:view-controller path="/appChat/websocketTest.page" view-name="base/app/websocketTest"/>
+</beans>

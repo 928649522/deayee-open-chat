@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.app.mapper.AppRoomRoleMapper">
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.app.entity.AppRoomRole" id="appRoomRoleMap">
+        <result property="roomRoleId" column="room_role_id"/>
+        <result property="roleType" column="role_type"/>
+        <result property="roomId" column="room_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+    </resultMap>
+
+    <resultMap type="com.superhao.app.entity.AppUser" id="appUserMap">
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="password" column="password"/>
+        <result property="userType" column="user_type"/>
+        <result property="file_id" column="fileId"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="address" column="address"/>
+        <result property="signature" column="signature"/>
+        <result property="loginNumber" column="login_number"/>
+        <result property="remark" column="remark"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+
+        <result property="filePath" column="file_path"/>
+        <result property="roleType" column="role_type"/>
+        <result property="roomRoleId" column="room_role_id"/>
+    </resultMap>
+
+
+    <sql id="baseSelecet">
+                room_role_id,
+                role_type,
+                user_nickname,
+                room_id,
+                user_id,
+                creation_time,
+                last_update_time,
+                creator,
+                modifier,
+            </sql>
+
+    <select id="selectAppUsersByRoomId"  resultMap="appUserMap" parameterType="java.util.Map">
+        select au.user_id,au.nick_name
+        ,au.user_type
+        ,CONCAT(#{httpPath},sf.module,'/',sf.file_path) as file_path
+        ,au.email
+        ,au.phone
+        ,au.user_name
+        ,ar.role_type
+        ,ar.room_role_id
+        from app_user_t au
+        inner join app_room_role_t ar  on au.user_id = ar.user_id
+        left join sys_file_t sf  on au.file_id =sf.file_id
+        <where>
+            <if test="roomId!=null">
+             and   ar.room_id = #{roomId}
+            </if>
+            <if test="roleType!=null">
+             and   ar.role_type != #{roleType}
+            </if>
+        </where>
+
+         order by au.creation_time
+
+    </select>
+
+</mapper>

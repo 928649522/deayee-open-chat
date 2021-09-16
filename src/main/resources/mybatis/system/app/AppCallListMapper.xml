@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.app.mapper.AppCallListMapper">
+
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.app.entity.AppCallList" id="appCallListMap">
+        <result property="callListId" column="call_list_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="roomId" column="room_id"/>
+        <result property="remark" column="remark"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                call_list_id,
+                user_id,
+                room_id,
+                remark,
+                creation_time,
+                last_update_time,
+                creator,
+                modifier,
+                creation_place,
+                last_update_place,
+                status,
+                enable,
+                version_number,
+            </sql>
+
+    <resultMap type="com.superhao.app.entity.AppRoom" id="appRoomMap">
+        <result property="roomId" column="room_id"/>
+        <result property="roomCode" column="room_code"/>
+        <result property="roomName" column="room_name"/>
+        <result property="findChatRecordNumber" column="find_chat_record_number"/>
+        <result property="anonymousSayTime" column="anonymous_say_time"/>
+        <result property="anonymousSayNumber" column="anonymous_say_number"/>
+        <result property="isAnonymous" column="is_anonymous"/>
+        <result property="isPicture" column="is_picture"/>
+        <result property="fileId" column="file_id"/>
+        <result property="remark" column="remark"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+        <result property="disablePeople" column="disable_people"/>
+        <result property="onlineBasePeople" column="online_base_people"/>
+        <result property="basePeople" column="base_people"/>
+
+
+        <result property="filePath" column="file_path"/>
+    </resultMap>
+
+    <resultMap type="com.superhao.app.entity.AppUser" id="appUserMap">
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="password" column="password"/>
+        <result property="userType" column="user_type"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="address" column="address"/>
+        <result property="signature" column="signature"/>
+
+        <result property="remark" column="remark"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+
+        <result property="filePath" column="file_path"/>
+
+    </resultMap>
+
+    <select id="selectRoomById" parameterType="java.lang.Long" resultMap="appRoomMap">
+        SELECT
+         		rt.room_id,
+                rt.room_code,
+                rt.room_name,
+                rt.find_chat_record_number,
+                rt.anonymous_say_time,
+                rt.anonymous_say_number,
+                rt.is_anonymous,
+                rt.is_picture,
+
+                rt.disable_people,
+                rt.online_base_people,
+                rt.base_people,
+                rt.remark,
+                rt.creation_time,
+                rt.last_update_time,
+                rt.creator,
+                rt.modifier,
+                rt.creation_place,
+                rt.last_update_place,
+                rt.status,
+                rt.enable,
+                rt.version_number
+         ,CONCAT(sf.module,'/',sf.file_path) as file_path
+        from app_call_list_t ct INNER join app_room_t rt on ct.room_id = rt.room_id
+          left join sys_file_t sf on rt.file_id = sf.file_id
+         where ct.creator = #{userId} and ct.user_id = -1
+    </select>
+
+    <select id="selectUserById" parameterType="java.lang.Long" resultMap="appUserMap">
+              SELECT
+                rt.user_id,
+                rt.user_name,
+                ct.remark as nick_name,
+                rt.user_type,
+                rt.email,
+                rt.phone,
+                rt.sex,
+                rt.birthday,
+                rt.address,
+                rt.signature,
+                rt.login_number,
+                rt.remark,
+                rt.creation_time,
+                rt.last_update_time,
+                rt.creator,
+                rt.modifier,
+                rt.creation_place,
+                rt.last_update_place,
+                rt.status,
+                rt.enable,
+                rt.version_number,
+                CONCAT(sf.module,'/',sf.file_path) as file_path
+          from app_call_list_t ct INNER join app_user_t rt on ct.user_id = rt.user_id
+        left join sys_file_t sf on rt.file_id = sf.file_id
+        where ct.creator = #{userId}  and ct.room_id = -1
+    </select>
+
+
+</mapper>

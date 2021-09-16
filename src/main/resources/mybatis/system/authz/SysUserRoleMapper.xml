@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.base.authz.mapper.SysUserRoleMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.base.authz.entity.SysUserRole" id="sysUserRoleMap">
+        <result property="userRoleId" column="user_role_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                user_role_id,
+                user_id,
+                role_id,
+                creation_time,
+                last_update_time,
+                creator,
+                modifier,
+                creation_place,
+                last_update_place,
+                status,
+                enable,
+                version_number,
+            </sql>
+
+    <select id="selectRolePermissionByUser" parameterType="java.util.Map" resultMap="com.superhao.base.authz.mapper.SysPermissionMapper.sysPermissionMap">
+      SELECT
+            a.*
+        FROM
+            sys_permission_t a
+        <where>
+           and a.permission_id IN (
+                SELECT
+                    rpt.permission_id
+                FROM
+                    sys_role_permission_t rpt
+                WHERE
+                    rpt.role_id IN (
+                        SELECT
+                            su.role_id
+                        FROM
+                            sys_user_role_t su
+                        WHERE
+                            su.user_id = #{userId}
+                            and
+                            su.enable='Y'
+                    )
+            )
+
+                <if test="position!=null">
+                 and   a.position = #{position}
+                </if>
+                <if test="status!=null">
+                    and   a.status = #{status}
+                </if>
+            <if test="parentId!=null">
+                and   a.parent_id = #{parentId}
+            </if>
+            <if test="type!=null">
+                and   a.type = #{type}
+            </if>
+                and a.enable='Y'
+            </where>
+       order by order_number
+    </select>
+
+</mapper>

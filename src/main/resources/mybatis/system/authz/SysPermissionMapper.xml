@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.base.authz.mapper.SysPermissionMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.base.authz.entity.SysPermission" id="sysPermissionMap">
+        <result property="permissionId" column="permission_id"/>
+        <result property="type" column="type"/>
+        <result property="position" column="position"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="url" column="url"/>
+        <result property="icon" column="icon"/>
+        <result property="treeDeep" column="tree_deep"/>
+        <result property="deepCode" column="deep_code"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="description" column="description"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                permission_id,
+                `type`,
+                `position`,
+                parent_id,
+                `name`,
+                url,
+                icon,
+                tree_deep,
+                deep_code,
+                order_number,
+                description,
+                creation_time,
+                last_update_time,
+                creator,
+                modifier,
+                creation_place,
+                last_update_place,
+                status,
+                enable
+            </sql>
+
+</mapper>

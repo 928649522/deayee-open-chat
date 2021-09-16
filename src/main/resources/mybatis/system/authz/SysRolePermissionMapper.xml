@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.base.authz.mapper.SysRolePermissionMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.base.authz.entity.SysRolePermission" id="sysRolePermissionMap">
+        <result property="rolePermissionId" column="role_permission_id"/>
+        <result property="permissionId" column="permission_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                role_permission_id,
+                permission_id,
+                role_id,
+                creation_time,
+                last_update_time,
+                creator,
+                modifier,
+                creation_place,
+                last_update_place,
+                status,
+                enable
+            </sql>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.app.mapper.AppChatRecordMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.app.entity.AppChatRecord" id="appChatRecordMap">
+        <result property="chatRecordId" column="chat_record_id"/>
+        <result property="type" column="type"/>
+        <result property="content" column="content"/>
+        <result property="uuid" column="uuid"/>
+
+        <result property="roomId" column="room_id"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="creator" column="creator"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                chat_record_id,
+                uuid,
+                `type`,
+                content,
+                user_id,
+                room_id,
+                creation_time,
+                creator
+            </sql>
+
+    <select id="selectListByRoomParam" parameterType="java.util.Map" resultMap="appChatRecordMap">
+        select <include refid="baseSelecet"/> from app_chat_record_t where room_id = #{roomId}
+         order by creation_time limit  #{begin},#{findChatRecordNumber}
+    </select>
+
+    <select id="searchChatRoomDataByPage" parameterType="java.util.Map" resultMap="appChatRecordMap">
+       select a.* from (select <include refid="baseSelecet"/> from app_chat_record_t where room_id = #{roomId} order by creation_time desc) a
+       where a.chat_record_id <![CDATA[<]]> #{msgid}
+         limit  #{pageSize}
+    </select>
+
+
+</mapper>

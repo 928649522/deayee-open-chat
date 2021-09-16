@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.superhao.app.mapper.AppActivityIntegralMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.superhao.app.entity.AppActivityIntegral" id="appActivityIntegralMap">
+        <result property="integralId" column="integral_id"/>
+        <result property="activityId" column="activity_id"/>
+        <result property="integralNumber" column="integral_number"/>
+        <result property="type" column="type"/>
+        <result property="remark" column="remark"/>
+        <result property="creationTime" column="creation_time"/>
+        <result property="lastUpdateTime" column="last_update_time"/>
+        <result property="creator" column="creator"/>
+        <result property="modifier" column="modifier"/>
+        <result property="creationPlace" column="creation_place"/>
+        <result property="lastUpdatePlace" column="last_update_place"/>
+        <result property="status" column="status"/>
+        <result property="enable" column="enable"/>
+        <result property="versionNumber" column="version_number"/>
+
+        <result property="userName" column="user_name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+    </resultMap>
+
+    <sql id="baseSelecet">
+                a.integral_id,
+                a.activity_id,
+                a.integral_number,
+                a.`type`,
+                a.remark,
+                a.creation_time,
+                a.last_update_time,
+                a.creator,
+                a.modifier,
+                a.creation_place,
+                a.last_update_place,
+                a.status,
+                a.enable,
+                a.version_number
+            </sql>
+
+
+    <select id="searchActivityIntegralCount" parameterType="com.superhao.app.entity.AppActivityIntegral" resultType="java.lang.Double">
+        select sum(integral_number) from app_activity_integral_t
+        where activity_id=#{activityId} and `type`=#{type} and (status=#{status} or status='B')
+
+    </select>
+
+    <select id="selectPageByUserId" parameterType="java.util.Map" resultMap="appActivityIntegralMap">
+        select <include refid="baseSelecet"/>,b.user_name,b.email,b.phone
+        from app_activity_integral_t a
+        inner join app_user_t b on  a.creator = b.user_id
+        <if test="searchText!=null">
+            where  b.user_name = #{searchText} or b.email = #{searchText} or b.phone = #{searchText} or a.activity_id=#{searchText}
+        </if>
+        order by a.creation_time desc ,a.integral_number desc
+        limit #{page},#{size}
+    </select>
+
+    <select id="selectCountByUserId" parameterType="java.util.Map" resultType="java.lang.Integer">
+        select count(1)
+        from app_activity_integral_t a
+        inner join app_user_t b  on a.creator = b.user_id
+        <if test="searchText!=null">
+            where  b.user_name = #{searchText} or b.email = #{searchText} or b.phone = #{searchText}  or a.activity_id=#{searchText}
+        </if>
+    </select>
+</mapper>
